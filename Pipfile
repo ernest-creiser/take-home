@@ -8,6 +8,8 @@ fastapi = {extras = ["standard"], version = "*"}
 pydantic = "*"
 ipython = "*"
 ipdb = "*"
+httpx = "*"
+pytest = "*"
 
 [dev-packages]
 
