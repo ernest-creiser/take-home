@@ -1,0 +1,20 @@
+{
+  "key1": "abcd",
+  "key2": 1,
+  "key3": 1.0,
+  "key4": null,
+  "key5": {
+      "foo": "foobar",
+      "bar": {
+          "isBar": true
+      }
+  },
+  "key6": [],
+  "key7": {},
+  "key8": 1e3,
+  "key9": "",
+  "key10": 0,
+  "key11": 0.0,
+  "key12": "0",
+  "key13": "1e3"
+}
