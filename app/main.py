@@ -1,9 +1,14 @@
 import base64
+import hashlib
+import hmac
 import json
+import os
 from typing import Any, Literal
 
 from fastapi import Body, FastAPI, Response
 from pydantic import BaseModel
+
+secret_key = os.getenv("SECRET_KEY", default="secret-key")
 
 app = FastAPI()
 
@@ -24,14 +29,6 @@ def encrypt(payload: dict = Body()) -> dict[str, Any]:
 @app.post("/decrypt")
 def decrypt(payload: dict = Body()) -> dict[str, Any]:
     return {key: json.loads(decode(val)) for key, val in payload.items()}
-
-
-import os
-
-secret_key = os.getenv("SECRET_KEY", default="secret-key")
-
-import hmac
-import hashlib
 
 
 @app.post("/sign")
