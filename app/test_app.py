@@ -1,3 +1,4 @@
+from pathlib import Path
 from fastapi.testclient import TestClient
 import pytest
 import json
@@ -7,18 +8,29 @@ from app.main import app
 client = TestClient(app)
 
 
+fixture_dir = Path("fixtures")
+
+
 @pytest.mark.parametrize(
-    "input,expected", [("app/payload.json", 200), ("app/payload-array.json", 422)]
+    "input,expected",
+    [
+        ("object.json", 200),
+        ("empty-object.json", 200),
+        ("array.json", 422),
+        ("duplicate-key.json", 200),
+    ],
 )
 def test_encrypt_200(input: str, expected: int):
-    with open(input) as f:
+    with open(fixture_dir / input) as f:
         response = client.post("/encrypt", json=json.load(f))
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize("input", ["app/payload.json"])
+@pytest.mark.parametrize(
+    "input", ["object.json", "empty-object.json", "emoji.json", "duplicate-key.json"]
+)
 def test_encrypt_decrypt(input: str):
-    with open(input) as f:
+    with open(fixture_dir / input) as f:
         payload = json.load(f)
 
     response_encrypt = client.post("/encrypt", json=payload)
@@ -31,9 +43,18 @@ def test_encrypt_decrypt(input: str):
     assert all([v == payload[k] for k, v in decrypted_payload.items()])
 
 
-@pytest.mark.parametrize("input", ["app/payload.json", "app/payload-array.json"])
+@pytest.mark.parametrize(
+    "input",
+    [
+        "object.json",
+        "array.json",
+        "empty-object.json",
+        "empty-array.json",
+        "duplicate-key.json",
+    ],
+)
 def test_sign_and_verify(input: str):
-    with open(input) as f:
+    with open(fixture_dir / input) as f:
         payload = json.load(f)
 
     response_sign = client.post("/sign", json=payload).json()
